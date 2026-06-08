@@ -2553,3 +2553,89 @@ window.addEventListener('pageshow',()=>{normalizeFooterContacts();keepClientSess
   setTimeout(v4Run,350);
 })();
 /* === CLEAN V4 FINAL OVERRIDES END === */
+
+
+
+/* === CLEAN V5 CERTIFICATES DATA START === */
+(function(){
+  const PLESO_PROFILE_URL = 'https://pleso.me/ua/therapists?psychologist_id=fb130b5c-c921-448a-bfa4-919d16e65ffe';
+
+  const importedPlesoCertificates = [
+    {
+      id:'pleso-diploma-kdpu-2013',
+      title:'Диплом Криворізького Державного Педагогічного університету',
+      subtitle:'Вища та професійна освіта',
+      year:'2013',
+      text:'Спеціальність: “Практична психологія”. Спеціалізація: “Практичний психолог”. Дипломований спеціаліст.',
+      image:'',
+      sourceUrl:PLESO_PROFILE_URL,
+      sourceLabel:'Переглянути диплом'
+    }
+  ];
+
+  function getCertificatesFinal(){
+    let arr = [];
+    try { arr = JSON.parse(localStorage.getItem('psy_certificates') || '[]'); } catch(e){ arr = []; }
+    if(Array.isArray(arr) && arr.length) return arr;
+    return importedPlesoCertificates;
+  }
+
+  window.certificates = getCertificatesFinal;
+
+  function renderCertificatesFinal(){
+    const grid = document.getElementById('certificatesGrid');
+    if(!grid) return;
+
+    grid.innerHTML = getCertificatesFinal().map(c => {
+      const image = c.image
+        ? `<img src="${c.image}" alt="${esc(c.title || 'Сертифікат')}">`
+        : `<span>Диплом<br>2013</span>`;
+      const source = c.sourceUrl
+        ? `<a class="small-btn" href="${esc(c.sourceUrl)}" target="_blank" rel="noopener">${esc(c.sourceLabel || 'Переглянути документ')}</a>`
+        : '';
+      return `<article class="certificate-card reveal visible">
+        <div class="certificate-image">${image}</div>
+        <div class="certificate-content">
+          <h3>${esc(c.title || '')}</h3>
+          <div class="certificate-meta">
+            ${c.year ? `<span>${esc(c.year)}</span>` : ''}
+            ${c.subtitle ? `<span>${esc(c.subtitle)}</span>` : ''}
+          </div>
+          <p>${esc(c.text || '')}</p>
+          <div class="certificate-actions">
+            ${source}
+          </div>
+          <div class="certificate-source-note">Дані перенесені з відкритого профілю pleso. Фото диплому можна додати в кабінеті психолога.</div>
+        </div>
+      </article>`;
+    }).join('');
+  }
+
+  function renderAdminCertificatesFinal(){
+    const box = document.getElementById('adminCertificates');
+    if(!box) return;
+    box.innerHTML = getCertificatesFinal().map((c,i)=>`<div class="list-row">
+      <strong>${esc(c.title || '')}</strong>
+      <span>${esc(c.year || '')} ${esc(c.subtitle || '')}</span>
+      <div>
+        <button class="small-btn" type="button" onclick="editCertificate(${i})">Редагувати</button>
+        <button class="small-btn danger" type="button" onclick="deleteCertificate(${i})">Видалити</button>
+      </div>
+    </div>`).join('');
+  }
+
+  const oldRenderAll = window.renderAll;
+  if(typeof oldRenderAll === 'function' && !window.__cleanV5CertificatesHook){
+    window.__cleanV5CertificatesHook = true;
+    window.renderAll = function(){
+      oldRenderAll();
+      renderCertificatesFinal();
+      renderAdminCertificatesFinal();
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{renderCertificatesFinal();renderAdminCertificatesFinal();},80));
+  window.addEventListener('pageshow',()=>{renderCertificatesFinal();renderAdminCertificatesFinal();});
+  setTimeout(()=>{renderCertificatesFinal();renderAdminCertificatesFinal();},350);
+})();
+/* === CLEAN V5 CERTIFICATES DATA END === */
