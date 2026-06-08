@@ -2381,3 +2381,175 @@ window.addEventListener('pageshow',()=>{normalizeFooterContacts();keepClientSess
   setTimeout(finalV3Run, 350);
 })();
 /* === CLEAN V3 FINAL OVERRIDES END === */
+
+
+
+/* === CLEAN V4 FINAL OVERRIDES === */
+(function(){
+  function safeGet(k,f){ try { return JSON.parse(localStorage.getItem(k)) ?? f; } catch(e){ return f; } }
+  function safeSet(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
+  function el(id){ return document.getElementById(id); }
+
+  const importedDirections = [
+    {id:'dir1', title:'Основна експертиза', text:'Стосунки з партнером, стрес, тривога та страх, адаптація до нових умов життя, депресивні стани.'},
+    {id:'dir2', title:'Методи роботи', text:'Арт-терапія, психодинамічна та системна терапія, екзистенційний аналіз і логотерапія.'},
+    {id:'dir3', title:'Формат роботи', text:'Індивідуальні консультації та психотерапія для дорослих клієнтів від 18 років.'},
+    {id:'dir4', title:'Підтримка у складних станах', text:'Робота з тривожною і депресивною симптоматикою, емоційним вигоранням, внутрішніми та зовнішніми конфліктами.'},
+    {id:'dir5', title:'Особливість терапії', text:'Уважне слухання, підтримувальний темп, пошук внутрішньої опори, творчі методи та фокус на глибинних переживаннях.'},
+    {id:'dir6', title:'Адаптація до змін', text:'Допомога у проходженні складних періодів життя, розвитку резилієнтності та пошуку власного шляху.'}
+  ];
+
+  const defaultCertificates = [
+    {id:'cert1', title:'Диплом Криворізького Державного Педагогічного університету', subtitle:'Спеціальність: “Практична психологія”. Спеціалізація: “Практичний психолог”.', year:'2013', text:'Вища та професійна освіта психолога.', image:''}
+  ];
+
+  function certificates(){
+    const arr = safeGet('psy_certificates', null);
+    if(Array.isArray(arr) && arr.length) return arr;
+    return defaultCertificates;
+  }
+  window.certificates = certificates;
+
+  function directions(){
+    const arr = safeGet('psy_directions', null);
+    if(Array.isArray(arr) && arr.length) return arr;
+    return importedDirections;
+  }
+  window.directions = directions;
+
+  function renderDirections(){
+    const grid = el('therapyDirectionsGrid');
+    if(grid){
+      grid.innerHTML = directions().map(d=>`<article class="info-card reveal visible"><h3>${esc(d.title||'')}</h3><p>${esc(d.text||'')}</p></article>`).join('');
+    }
+  }
+
+  function renderCertificates(){
+    const grid = el('certificatesGrid');
+    if(grid){
+      grid.innerHTML = certificates().map(c=>`<article class="info-card certificate-card reveal visible">
+        <div class="certificate-image">${c.image ? `<img src="${c.image}" alt="${esc(c.title||'Сертифікат')}">` : '<span>Фото сертифікату</span>'}</div>
+        <h3>${esc(c.title||'')}</h3>
+        <div class="certificate-meta">${c.year ? `<span>${esc(c.year)}</span>` : ''}${c.subtitle ? `<span>${esc(c.subtitle)}</span>` : ''}</div>
+        <p>${esc(c.text||'')}</p>
+      </article>`).join('');
+    }
+  }
+
+  function renderAdminCertificates(){
+    const box = el('adminCertificates');
+    if(!box) return;
+    box.innerHTML = certificates().map((c,i)=>`<div class="list-row"><strong>${esc(c.title||'')}</strong><span>${esc(c.year||'')} ${esc(c.subtitle||'')}</span><div><button class="small-btn" type="button" onclick="editCertificate(${i})">Редагувати</button><button class="small-btn danger" type="button" onclick="deleteCertificate(${i})">Видалити</button></div></div>`).join('');
+  }
+
+  window.editCertificate = function(i){
+    const c = certificates()[i]; if(!c) return;
+    if(el('certificateEditId')) el('certificateEditId').value = i;
+    if(el('certificateTitle')) el('certificateTitle').value = c.title || '';
+    if(el('certificateSubtitle')) el('certificateSubtitle').value = c.subtitle || '';
+    if(el('certificateYear')) el('certificateYear').value = c.year || '';
+    if(el('certificateText')) el('certificateText').value = c.text || '';
+  };
+  window.deleteCertificate = function(i){
+    const arr = certificates().slice();
+    arr.splice(i,1);
+    safeSet('psy_certificates', arr);
+    renderAll();
+  };
+
+  function bindCertificateForm(){
+    const form = el('certificateForm');
+    if(!form || form.dataset.bound === 'yes') return;
+    form.dataset.bound = 'yes';
+    form.addEventListener('submit', e=>{
+      e.preventDefault();
+      const arr = certificates().slice();
+      const idx = el('certificateEditId') ? el('certificateEditId').value : '';
+      const old = idx !== '' ? arr[Number(idx)] || {} : {};
+      const file = el('certificateImage') && el('certificateImage').files ? el('certificateImage').files[0] : null;
+      const save = (imageValue) => {
+        const item = {
+          id: old.id || uid(),
+          title: (el('certificateTitle')?.value || '').trim(),
+          subtitle: (el('certificateSubtitle')?.value || '').trim(),
+          year: (el('certificateYear')?.value || '').trim(),
+          text: (el('certificateText')?.value || '').trim(),
+          image: imageValue ?? old.image ?? ''
+        };
+        if(idx !== '') arr[Number(idx)] = item; else arr.push(item);
+        safeSet('psy_certificates', arr);
+        form.reset();
+        if(el('certificateEditId')) el('certificateEditId').value = '';
+        renderAll();
+      };
+      if(file){
+        const r = new FileReader();
+        r.onload = () => save(r.result);
+        r.readAsDataURL(file);
+      }else save(old.image || '');
+    });
+  }
+
+  function renderBrandName(){
+    const s = site();
+    const name = s.brandName || 'PSYSpace';
+    document.querySelectorAll('.logo, .footer-logo').forEach(node=>{
+      if(node.classList.contains('logo')){
+        node.innerHTML = esc(name).replace('Space','<span>Space</span>');
+      }else{
+        node.innerHTML = esc(name).replace('Space','<span>Space</span>');
+      }
+    });
+  }
+
+  function moveFooterLegal(){
+    // Ensure legal links remain separated in lower left and contacts don't include legal text.
+    document.querySelectorAll('.footer-links').forEach(links=>{
+      links.innerHTML = '<a href="privacy.html">Політика</a><a href="offer.html">Публічна оферта</a><a href="ethics.html">Етичний кодекс</a><a href="contacts.html">Контакти</a><a href="auth.html">Увійти</a>';
+    });
+  }
+
+  function cleanFooterAgain(){
+    normalizeFooterContacts();
+    document.querySelectorAll('.footer-contact').forEach(a=>{
+      [...a.children].forEach(ch=>{
+        if(!ch.classList.contains('footer-icon') && !ch.classList.contains('footer-label') && !ch.classList.contains('footer-value')) ch.remove();
+      });
+    });
+  }
+
+  function ensureHomeNoFrame(){
+    const home = el('homePsychologistPhoto');
+    if(home){
+      home.classList.add('no-photo-frame');
+      const img = home.querySelector('img');
+      if(img){ img.style.borderRadius = '34px'; }
+    }
+  }
+
+  function v4Run(){
+    renderBrandName();
+    renderDirections();
+    renderCertificates();
+    renderAdminCertificates();
+    bindCertificateForm();
+    moveFooterLegal();
+    cleanFooterAgain();
+    ensureHomeNoFrame();
+    keepClientSessionLinks();
+  }
+
+  const oldRenderAll = window.renderAll;
+  if(typeof oldRenderAll === 'function' && !window.__cleanV4RenderHook){
+    window.__cleanV4RenderHook = true;
+    window.renderAll = function(){
+      oldRenderAll();
+      v4Run();
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(v4Run,80));
+  window.addEventListener('pageshow',v4Run);
+  setTimeout(v4Run,350);
+})();
+/* === CLEAN V4 FINAL OVERRIDES END === */
