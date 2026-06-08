@@ -2827,3 +2827,236 @@ window.addEventListener('pageshow',()=>{normalizeFooterContacts();keepClientSess
   setTimeout(finalRun,350);
 })();
 /* === CLEAN V6 FINAL OVERRIDES END === */
+
+
+
+/* === CLEAN V7 FINAL OVERRIDES === */
+(function(){
+  function safeGet(k,f){ try { return JSON.parse(localStorage.getItem(k)) ?? f; } catch(e){ return f; } }
+  function safeSet(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
+  const $ = id => document.getElementById(id);
+
+  function toast(msg='Збережено'){
+    const t = $('adminToast');
+    if(!t) return;
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(window.__psyToastTimer);
+    window.__psyToastTimer = setTimeout(()=>t.classList.remove('show'), 2200);
+  }
+  window.adminToast = toast;
+
+  function adminModal(title, body){
+    const m=$('adminEditModal'), b=$('adminEditBody'), h=$('adminEditTitle');
+    if(!m||!b||!h) return;
+    h.textContent=title;
+    b.innerHTML=body;
+    m.classList.add('open');
+  }
+  function closeAdminModal(){
+    const m=$('adminEditModal');
+    if(m) m.classList.remove('open');
+  }
+  window.closeAdminModal = closeAdminModal;
+  document.addEventListener('click',e=>{
+    if(e.target && e.target.id==='adminEditClose') closeAdminModal();
+    if(e.target && e.target.id==='adminEditModal') closeAdminModal();
+  });
+
+  function cleanPhone(v){
+    return String(v||'').replace(/[^\d+]/g,'');
+  }
+
+  function isPhoneValue(v){
+    const s=String(v||'').trim();
+    const digits=s.replace(/\D/g,'');
+    return (s.startsWith('+') || /^\d/.test(s)) && digits.length>=7;
+  }
+
+  function contactKindFinal(c){
+    const title=String(c.title||c.name||'').toLowerCase();
+    const value=String(c.value||c.url||c.phone||c.email||'').trim();
+    const link=String(c.link||c.href||'').toLowerCase();
+
+    if(link.startsWith('tel:') || title.includes('тел') || title.includes('phone') || isPhoneValue(value)) return ['phone','Телефон'];
+    if(link.startsWith('mailto:') || title.includes('email') || title.includes('пошта') || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return ['email','Email'];
+    if(title.includes('instagram') || link.includes('instagram')) return ['instagram','Instagram'];
+    if(title.includes('telegram') || title.includes('телеграм') || link.includes('t.me') || link.includes('telegram')) return ['telegram','Telegram'];
+    if(title.includes('facebook') || link.includes('facebook') || link.includes('fb.com')) return ['facebook','Facebook'];
+    return ['site', c.title || 'Контакт'];
+  }
+
+  function contactLinkFinal(c,type,value){
+    let link=String(c.link||c.href||'').trim();
+    if(link && link !== '#') return link;
+    if(type==='phone') return 'tel:'+cleanPhone(value);
+    if(type==='email') return 'mailto:'+value;
+    if(type==='telegram') return 'https://t.me/'+String(value).replace('@','').trim();
+    if(type==='instagram') return 'https://instagram.com/'+String(value).replace('@','').trim();
+    return '#';
+  }
+
+  window.renderContactCard = function(c,mode){
+    const [type,label]=contactKindFinal(c);
+    const value=String(c.value||c.title||label).replace(/[■▪●◆◼︎◾︎⬛︎□▫︎●•◎◉☎]/g,'').trim()||label;
+    const href=contactLinkFinal(c,type,value);
+    const target=href && href!=='#' && !href.startsWith('tel:') && !href.startsWith('mailto:') ? ' target="_blank" rel="noopener"' : '';
+    const iconHtml=(typeof CONTACT_ICONS!=='undefined' && CONTACT_ICONS[type]) ? CONTACT_ICONS[type] : '';
+    if(mode==='footer'){
+      return `<a class="footer-contact" href="${esc(href)}"${target}><span class="footer-icon ${type}">${iconHtml}</span><span class="footer-label">${esc(label)}</span><b class="footer-value">${esc(value)}</b></a>`;
+    }
+    return `<a class="contact-card reveal visible" href="${esc(href)}"${target}><span class="contact-icon ${type}">${iconHtml}</span><span class="contact-title">${esc(label)}</span><b class="contact-value">${esc(value)}</b></a>`;
+  };
+
+  window.normalizeFooterContacts = function(){
+    const f=$('footerContacts');
+    if(f) f.innerHTML=contacts().map(c=>renderContactCard(c,'footer')).join('');
+    const tg=$('telegramFloat');
+    if(tg){
+      const t=contacts().find(c=>contactKindFinal(c)[0]==='telegram');
+      tg.href=t ? contactLinkFinal(t,'telegram',t.value||t.title||'') : (site().telegramUrl||'https://t.me/USERNAME');
+    }
+    removeSquares();
+  };
+
+  function renderContacts(){
+    const g=$('contactsGrid');
+    if(g) g.innerHTML=contacts().map(c=>renderContactCard(c,'main')).join('');
+  }
+
+  function removeSquares(){
+    document.querySelectorAll('.footer-contact,.contact-card').forEach(a=>{
+      [...a.children].forEach(ch=>{
+        const ok=['footer-icon','footer-label','footer-value','contact-icon','contact-title','contact-value'].some(cls=>ch.classList.contains(cls));
+        if(!ok) ch.remove();
+      });
+      a.querySelectorAll('i,em,small:not(.footer-label):not(.contact-title),.dot,.marker,.square,[class*="badge"],[class*="mark"]').forEach(x=>x.remove());
+    });
+  }
+
+  /* Contacts admin: save link/value reliably */
+  function bindContactEditor(){
+    const form=$('contactForm') || $('contactItemForm') || $('contactsForm');
+    if(!form || form.dataset.cleanV7Bound==='yes') return;
+    form.dataset.cleanV7Bound='yes';
+    form.addEventListener('submit',()=>{
+      setTimeout(()=>{toast('Контакти збережено'); normalizeFooterContacts(); renderContacts();},120);
+    });
+  }
+
+  /* Admin no-prompt editors for about facts/cards */
+  function openSimpleEditor(kind,index){
+    let arrKey, arr, title='Редагування', fields='';
+    if(kind==='aboutExtra'){
+      arrKey='psy_about_extra';
+      arr=safeGet(arrKey, []);
+      const item=arr[index]||{};
+      title='Редагування блоку “Про психолога”';
+      fields=`<form id="modalEditForm">
+        <input name="title" placeholder="Назва" value="${esc(item.title||'')}">
+        <textarea name="text" placeholder="Текст">${esc(item.text||'')}</textarea>
+        <button class="btn primary full" type="submit">Зберегти</button>
+      </form>`;
+    }else if(kind==='certificate'){
+      arrKey='psy_certificates';
+      arr=certificates();
+      const item=arr[index]||{};
+      title='Редагування сертифікату';
+      fields=`<form id="modalEditForm">
+        <input name="title" placeholder="Назва" value="${esc(item.title||'')}">
+        <input name="subtitle" placeholder="Підпис / організація" value="${esc(item.subtitle||'')}">
+        <input name="year" placeholder="Рік" value="${esc(item.year||'')}">
+        <textarea name="text" placeholder="Опис">${esc(item.text||'')}</textarea>
+        <label class="admin-field">Фото <input name="image" type="file" accept="image/*"></label>
+        <button class="btn primary full" type="submit">Зберегти</button>
+      </form>`;
+    }else return;
+
+    adminModal(title, fields);
+    const form=$('modalEditForm');
+    form.addEventListener('submit',e=>{
+      e.preventDefault();
+      const fd=new FormData(form);
+      const save=(image)=>{
+        const old=arr[index]||{};
+        const updated={...old};
+        ['title','subtitle','year','text'].forEach(k=>{ if(fd.has(k)) updated[k]=String(fd.get(k)||'').trim(); });
+        if(image!==undefined) updated.image=image;
+        arr[index]=updated;
+        safeSet(arrKey, arr);
+        closeAdminModal();
+        toast('Збережено');
+        renderAll();
+      };
+      const file=form.querySelector('input[type=file]')?.files?.[0];
+      if(file){
+        const r=new FileReader();
+        r.onload=()=>save(r.result);
+        r.readAsDataURL(file);
+      }else save(undefined);
+    });
+  }
+
+  window.editAboutExtra=function(i){ openSimpleEditor('aboutExtra', i); };
+  window.editCertificate=function(i){ openSimpleEditor('certificate', i); };
+
+  const oldDeleteCert=window.deleteCertificate;
+  window.deleteCertificate=function(i){
+    const arr=certificates().slice();
+    arr.splice(i,1);
+    safeSet('psy_certificates',arr);
+    toast('Видалено');
+    renderAll();
+  };
+
+  const oldDeleteAbout=window.deleteAboutExtra;
+  window.deleteAboutExtra=function(i){
+    const arr=safeGet('psy_about_extra',[]).slice();
+    arr.splice(i,1);
+    safeSet('psy_about_extra',arr);
+    toast('Видалено');
+    renderAll();
+  };
+
+  /* Ensure certificate form works and shows saved message */
+  function bindCertificateFormV7(){
+    const form=$('certificateForm');
+    if(!form || form.dataset.v7Bound==='yes') return;
+    form.dataset.v7Bound='yes';
+    form.addEventListener('submit',()=>{
+      setTimeout(()=>{toast('Сертифікат збережено'); renderAll();},120);
+    });
+  }
+
+  /* Services force class hooks if old markup names are different */
+  function normalizeServicesMarkup(){
+    document.querySelectorAll('.service-card').forEach(card=>{
+      card.style.wordBreak='normal';
+      card.style.overflowWrap='break-word';
+    });
+  }
+
+  function finalRun(){
+    normalizeFooterContacts();
+    renderContacts();
+    removeSquares();
+    bindContactEditor();
+    bindCertificateFormV7();
+    normalizeServicesMarkup();
+    keepClientSessionLinks();
+  }
+
+  const oldRenderAll=window.renderAll;
+  if(typeof oldRenderAll==='function' && !window.__cleanV7Hook){
+    window.__cleanV7Hook=true;
+    window.renderAll=function(){
+      oldRenderAll();
+      finalRun();
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(finalRun,100));
+  window.addEventListener('pageshow',finalRun);
+  setTimeout(finalRun,400);
+})();
+/* === CLEAN V7 FINAL OVERRIDES END === */

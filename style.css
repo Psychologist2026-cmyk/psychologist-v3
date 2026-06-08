@@ -4574,3 +4574,341 @@ main { flex: 1 0 auto; }
   }
 }
 /* PSYSPACE CLEAN V6 END */
+
+
+
+/* PSYSPACE CLEAN V7 START */
+
+/* Services: stop narrow broken cards and word splitting */
+.services-wrap,
+.services-section,
+#serviceTypes,
+.service-types-wrap{
+  max-width:min(1480px, calc(100vw - clamp(32px,5vw,84px))) !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
+}
+.service-type-card{
+  width:100% !important;
+  max-width:none !important;
+  padding:clamp(26px,3vw,42px) !important;
+  border-radius:34px !important;
+  background:rgba(255,250,243,.70) !important;
+  border:1px solid rgba(75,45,32,.10) !important;
+}
+.service-type-card h2,
+.service-type-card h3{
+  white-space:normal !important;
+  word-break:normal !important;
+  overflow-wrap:normal !important;
+  text-wrap:balance !important;
+}
+.service-grid,
+.services-grid,
+.consultations-grid,
+.service-list{
+  display:grid !important;
+  grid-template-columns:repeat(3,minmax(280px,1fr)) !important;
+  gap:18px !important;
+  align-items:stretch !important;
+}
+.service-card{
+  min-width:0 !important;
+  min-height:330px !important;
+  padding:26px !important;
+  border-radius:30px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:space-between !important;
+}
+.service-card h3,
+.service-card p,
+.service-card strong,
+.service-card span{
+  white-space:normal !important;
+  word-break:normal !important;
+  overflow-wrap:break-word !important;
+  hyphens:none !important;
+}
+.service-card .btn,
+.service-card button{
+  width:100% !important;
+  margin-top:18px !important;
+}
+
+/* Contacts addresses: previous visual style, wide cards */
+.offline-address-section{
+  max-width:min(1480px, calc(100vw - clamp(32px,5vw,84px))) !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
+}
+.address-grid{
+  display:grid !important;
+  grid-template-columns:repeat(2,minmax(360px,1fr)) !important;
+  gap:24px !important;
+}
+.address-card{
+  min-height:260px !important;
+  display:grid !important;
+  grid-template-columns:76px minmax(0,1fr) !important;
+  gap:24px !important;
+  align-items:start !important;
+  padding:clamp(30px,3.5vw,48px) !important;
+  border-radius:36px !important;
+  background:rgba(255,250,243,.72) !important;
+  border:1px solid rgba(75,45,32,.10) !important;
+  box-shadow:0 18px 48px rgba(44,23,16,.055) !important;
+  text-decoration:none !important;
+}
+.address-pin{
+  width:66px !important;
+  height:66px !important;
+  border-radius:22px !important;
+  background:linear-gradient(135deg,#4b2d20,#2c1710) !important;
+  color:#fffaf3 !important;
+}
+.address-card small{
+  display:block !important;
+  margin:0 0 10px !important;
+  font-size:13px !important;
+  font-weight:900 !important;
+  color:rgba(44,23,16,.58) !important;
+}
+.address-card h3{
+  margin:0 0 8px !important;
+  font-size:clamp(40px,4vw,62px) !important;
+  line-height:1 !important;
+}
+.address-card p{
+  margin:0 0 22px !important;
+  font-size:16px !important;
+}
+
+/* Footer: rebuild cleanly, legal links at very bottom */
+.footer.premium-footer{
+  position:relative !important;
+  min-height:340px !important;
+  padding:42px clamp(28px,5vw,84px) calc(58px + env(safe-area-inset-bottom)) !important;
+  display:grid !important;
+  grid-template-columns:240px minmax(640px,980px) minmax(140px,1fr) !important;
+  grid-template-areas:"brand contacts ." !important;
+  gap:28px 42px !important;
+  align-items:start !important;
+}
+.footer-brand{
+  grid-area:brand !important;
+  align-self:start !important;
+}
+.footer-contacts{
+  grid-area:contacts !important;
+  width:100% !important;
+  max-width:980px !important;
+  justify-self:center !important;
+  display:grid !important;
+  grid-template-columns:repeat(2,minmax(300px,1fr)) !important;
+  gap:13px 16px !important;
+  margin:0 auto !important;
+}
+.footer-contact{
+  position:relative !important;
+  isolation:isolate !important;
+  min-height:74px !important;
+  display:grid !important;
+  grid-template-columns:50px minmax(0,1fr) !important;
+  grid-template-rows:auto auto !important;
+  column-gap:14px !important;
+  row-gap:2px !important;
+  align-items:center !important;
+  padding:12px 16px !important;
+  border-radius:24px !important;
+  background:rgba(255,250,243,.72) !important;
+  border:1px solid rgba(75,45,32,.10) !important;
+  overflow:hidden !important;
+  text-decoration:none !important;
+}
+.footer-contact > *{
+  position:relative !important;
+  z-index:2 !important;
+}
+.footer-contact > *:not(.footer-icon):not(.footer-label):not(.footer-value),
+.footer-contact i,
+.footer-contact em,
+.footer-contact small:not(.footer-label),
+.footer-contact .dot,
+.footer-contact .marker,
+.footer-contact .square,
+.footer-contact [class*="badge"],
+.footer-contact [class*="mark"]{
+  display:none !important;
+  width:0 !important;
+  height:0 !important;
+  opacity:0 !important;
+  visibility:hidden !important;
+}
+.footer-contact::before,
+.footer-contact::after,
+.footer-contact *::before,
+.footer-contact *::after{
+  content:none !important;
+  display:none !important;
+  width:0 !important;
+  height:0 !important;
+  opacity:0 !important;
+}
+.footer-icon{
+  grid-column:1 !important;
+  grid-row:1 / 3 !important;
+  width:46px !important;
+  height:46px !important;
+  min-width:46px !important;
+  border-radius:16px !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  overflow:hidden !important;
+  color:#fff !important;
+  font-size:0 !important;
+  line-height:0 !important;
+}
+.footer-icon svg{
+  width:25px !important;
+  height:25px !important;
+  display:block !important;
+}
+.footer-label{
+  grid-column:2 !important;
+  grid-row:1 !important;
+  font-size:12px !important;
+  line-height:1.05 !important;
+  font-weight:850 !important;
+  color:rgba(44,23,16,.56) !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+}
+.footer-value{
+  grid-column:2 !important;
+  grid-row:2 !important;
+  font-size:16px !important;
+  line-height:1.15 !important;
+  font-weight:950 !important;
+  color:#2c1710 !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+}
+.footer-links{
+  position:absolute !important;
+  left:clamp(28px,5vw,84px) !important;
+  bottom:calc(16px + env(safe-area-inset-bottom)) !important;
+  display:flex !important;
+  align-items:center !important;
+  flex-wrap:wrap !important;
+  gap:16px !important;
+  margin:0 !important;
+  padding:0 !important;
+  z-index:5 !important;
+}
+.footer-links a{
+  font-size:14px !important;
+  line-height:1.2 !important;
+  color:rgba(44,23,16,.62) !important;
+  text-decoration:none !important;
+}
+
+/* Contact page cards also without phantom squares */
+.contact-card > *:not(.contact-icon):not(.contact-title):not(.contact-value),
+.contact-card i,
+.contact-card em,
+.contact-card small:not(.contact-title),
+.contact-card [class*="badge"],
+.contact-card [class*="mark"]{
+  display:none !important;
+}
+.contact-card::before,
+.contact-card::after,
+.contact-card *::before,
+.contact-card *::after{
+  content:none !important;
+  display:none !important;
+}
+
+/* Admin modal/editor instead of browser prompt */
+.admin-edit-modal{
+  position:fixed;
+  inset:0;
+  z-index:999999;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:rgba(44,23,16,.28);
+  backdrop-filter:blur(12px);
+}
+.admin-edit-modal.open{display:flex}
+.admin-edit-card{
+  width:min(720px, calc(100vw - 32px));
+  max-height:calc(100vh - 48px);
+  overflow:auto;
+  padding:28px;
+  border-radius:32px;
+  background:rgba(255,250,243,.96);
+  border:1px solid rgba(75,45,32,.14);
+  box-shadow:0 24px 80px rgba(44,23,16,.22);
+}
+.admin-edit-card h2{margin:0 0 18px}
+.admin-edit-card form{display:grid;gap:14px}
+.admin-edit-card input,
+.admin-edit-card textarea,
+.admin-edit-card select{
+  width:100%;
+}
+.admin-toast{
+  position:fixed;
+  right:24px;
+  top:24px;
+  z-index:1000000;
+  display:none;
+  max-width:360px;
+  padding:14px 18px;
+  border-radius:999px;
+  background:linear-gradient(135deg,#4b2d20,#2c1710);
+  color:#fffaf3;
+  font-weight:900;
+  box-shadow:0 18px 48px rgba(44,23,16,.24);
+}
+.admin-toast.show{display:block}
+
+/* Prevent native alert/prompt look is handled in JS by overriding edit actions */
+
+/* responsive */
+@media(max-width:1100px){
+  .service-grid,
+  .services-grid,
+  .consultations-grid,
+  .service-list{
+    grid-template-columns:repeat(2,minmax(260px,1fr)) !important;
+  }
+  .footer.premium-footer{
+    grid-template-columns:1fr !important;
+    grid-template-areas:"brand" "contacts" !important;
+    padding-bottom:calc(128px + env(safe-area-inset-bottom)) !important;
+  }
+  .footer-links{
+    left:clamp(24px,5vw,44px) !important;
+  }
+}
+@media(max-width:760px){
+  .service-grid,
+  .services-grid,
+  .consultations-grid,
+  .service-list,
+  .address-grid,
+  .footer-contacts{
+    grid-template-columns:1fr !important;
+  }
+  .service-card{
+    min-height:auto !important;
+  }
+}
+/* PSYSPACE CLEAN V7 END */
