@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Про психолога</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="public">
+
+<header class="header">
+  <a class="logo" href="index.html">PSY<span>Space</span></a>
+  <button class="menu-btn" id="menuBtn" type="button"><span></span><span></span><span></span></button>
+  <nav class="nav" id="nav">
+    <a href="index.html">Головна</a>
+    <a href="about.html">Про психолога</a>
+    <a href="services.html">Послуги</a>
+    <a href="certificates.html">Сертифікати</a>
+    <a href="reviews.html">Відгуки</a>
+    <a href="faq.html">FAQ</a>
+    <a href="contacts.html">Контакти</a>
+    <a class="nav-chip" href="auth.html">Увійти</a>
+  </nav>
+</header>
+
+<main>
+
+<section class="section page-hero">
+  <p class="eyebrow">Про психолога</p>
+  <h1 data-site="psychologistName">Імʼя Психолога</h1>
+  <p class="hero-text" data-site="aboutIntro">Коротко про спеціаліста, досвід і підхід.</p>
+</section>
+<section class="section split">
+  <div class="photo-placeholder reveal instagram-photo-frame" id="psychologistPhoto"><span>Фото психолога</span></div>
+  <div class="about-facts-grid reveal" id="aboutFactsGrid">
+      <article><span>Вік</span><strong id="factAgePublic">—</strong></article>
+      <article><span>Досвід</span><strong id="factExperiencePublic">—</strong></article>
+      <article><span>Мова</span><strong id="factLanguagePublic">—</strong></article>
+      <article><span>Додатково</span><strong id="factCustomPublic">—</strong></article>
+    </div>
+    <div class="text-block reveal professional-path-card">
+    <h2 data-site="aboutTitle">Підхід до роботи</h2>
+    <p data-site="aboutText">Тут буде основний опис.</p>
+    <ul class="check-list" id="aboutBullets"><li>Індивідуальні консультації</li><li>Підтримка у складні періоди</li></ul>
+  </div>
+</section>
+<section class="section"><div class="cards" id="aboutExtraGrid"></div></section>
+
+</main>
+<footer class="footer premium-footer">
+  <div class="footer-brand">
+    <span class="footer-logo">PSY<span>Space</span></span>
+    <p>© 2026</p>
+  </div>
+  <div class="footer-contacts" id="footerContacts"></div>
+  <div class="footer-links"><a href="privacy.html">Політика</a><a href="contacts.html">Контакти</a><a href="auth.html">Увійти</a></div>
+</footer>
+<div class="fixed-cta" id="fixedCta">
+  <a class="fixed-cta-book" href="services.html#booking">Записатись</a>
+  <a class="fixed-cta-telegram" id="telegramFloat" href="https://t.me/USERNAME" target="_blank" rel="noopener">Telegram</a>
+</div>
+<div class="modal" id="appModal"><div class="modal-card"><button class="modal-close" id="modalClose" type="button">×</button><div id="modalBody"></div></div></div>
+<script src="script.js"></script>
+
+</body>
+</html>

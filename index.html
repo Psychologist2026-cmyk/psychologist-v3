@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PSYSpace</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="public">
+
+<header class="header">
+  <a class="logo" href="index.html">PSY<span>Space</span></a>
+  <button class="menu-btn" id="menuBtn" type="button"><span></span><span></span><span></span></button>
+  <nav class="nav" id="nav">
+    <a href="index.html">Головна</a>
+    <a href="about.html">Про психолога</a>
+    <a href="services.html">Послуги</a>
+    <a href="certificates.html">Сертифікати</a>
+    <a href="reviews.html">Відгуки</a>
+    <a href="faq.html">FAQ</a>
+    <a href="contacts.html">Контакти</a>
+    <a class="nav-chip" href="auth.html">Увійти</a>
+  </nav>
+</header>
+
+<main>
+
+<section class="hero section home-hero-new">
+  <div class="home-photo-frame reveal" id="homePsychologistPhoto">
+    <span>Фото психолога</span>
+  </div>
+  <div class="hero-content reveal">
+    <p class="eyebrow" data-site="homeEyebrow">Психологічна підтримка</p>
+    <p class="psychologist-name-main" id="homePsychologistName" data-site="psychologistName">Імʼя Психолога</p>
+    <h1 data-site="homeTitle">Простір для важливих розмов</h1>
+    <p class="hero-text" data-site="homeText">Короткий опис психолога, підходу до роботи та формату консультацій. Цей текст можна редагувати в кабінеті психолога.</p>
+    <div class="hero-actions">
+      <a class="btn primary" href="services.html#booking">Записатись</a>
+      <a class="btn secondary" href="about.html">Про психолога</a>
+    </div>
+    <div class="trust-row" id="homeTags">
+      <span>Конфіденційно</span><span>Онлайн</span><span>Офлайн</span><span>Zoom</span>
+    </div>
+  </div>
+<div class="home-availability-panel reveal" id="homeAvailabilityPanel">
+    <div class="home-availability-card">
+      <p class="eyebrow">Найближчий час на запис</p>
+      <h2>Вільні години</h2>
+      <div class="home-slots-list" id="homeNearestSlots"></div>
+      <small>Час вказано за Києвом</small>
+    </div>
+    <div class="home-availability-card urgent-mini">
+      <p class="eyebrow">Термінова консультація</p>
+      <h2>Потрібна зустріч сьогодні?</h2>
+      <p>Можна залишити терміновий запит. Психолог підтвердить його в кабінеті, після чого зʼявиться можливість оплати.</p>
+      <a class="btn primary" href="services.html#booking">Залишити запит</a>
+    </div>
+  </div>
+</section>
+<section class="section textured-band">
+  <div class="section-head reveal"><p class="eyebrow">Як проходить робота</p><h2>Зрозумілий шлях консультацій</h2></div>
+  <div class="process-grid" id="therapyStagesGrid">
+    <article class="process-card reveal"><span>01</span><h3>Знайомство</h3><p>Психолог уточнює запит, очікування та формат роботи.</p></article>
+    <article class="process-card reveal"><span>02</span><h3>План</h3><p>Визначаються цілі, частота зустрічей і комфортний темп.</p></article>
+    <article class="process-card reveal"><span>03</span><h3>Робота</h3><p>Регулярні консультації з фокусом на ваш стан і зміни.</p></article>
+    <article class="process-card reveal"><span>04</span><h3>Підтримка</h3><p>Поступове закріплення результатів і подальша підтримка.</p></article>
+  </div>
+</section>
+<section class="section">
+  <div class="section-head reveal"><p class="eyebrow">Напрямки</p><h2>З чим можна звернутися</h2></div>
+  <div class="cards" id="directionsGrid">
+    <article class="info-card"><h3>Тривога</h3><p>Робота з напругою та внутрішнім неспокоєм.</p></article>
+    <article class="info-card"><h3>Вигорання</h3><p>Підтримка при виснаженні та втраті ресурсу.</p></article>
+    <article class="info-card"><h3>Стосунки</h3><p>Кордони, конфлікти, повторювані сценарії.</p></article>
+  </div>
+</section>
+
+<section class="section textured-band" id="consultationRules">
+  <div class="rules-layout">
+    <div class="section-head reveal"><p class="eyebrow">Перед записом</p><h2>Правила консультацій</h2></div>
+    <div class="rules-card reveal">
+      <ul id="rulesList">
+        <li>Запис підтверджується після оплати або підтвердження психолога.</li>
+        <li>Перенесення та скасування можливі через кабінет клієнта.</li>
+        <li>Для онлайн-зустрічі посилання зʼявиться у вашому профілі.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+</main>
+<footer class="footer premium-footer">
+  <div class="footer-brand">
+    <span class="footer-logo">PSY<span>Space</span></span>
+    <p>© 2026</p>
+  </div>
+  <div class="footer-contacts" id="footerContacts"></div>
+  <div class="footer-links"><a href="privacy.html">Політика</a><a href="contacts.html">Контакти</a><a href="auth.html">Увійти</a></div>
+</footer>
+<div class="fixed-cta" id="fixedCta">
+  <a class="fixed-cta-book" href="services.html#booking">Записатись</a>
+  <a class="fixed-cta-telegram" id="telegramFloat" href="https://t.me/USERNAME" target="_blank" rel="noopener">Telegram</a>
+</div>
+<div class="modal" id="appModal"><div class="modal-card"><button class="modal-close" id="modalClose" type="button">×</button><div id="modalBody"></div></div></div>
+<script src="script.js"></script>
+
+</body>
+</html>
