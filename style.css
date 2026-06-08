@@ -4912,3 +4912,51 @@ main { flex: 1 0 auto; }
   }
 }
 /* PSYSPACE CLEAN V7 END */
+
+
+
+/* PSYSPACE CLEAN V8 START */
+*{hyphens:none!important}
+.info-card,.service-card,.contact-card,.footer-contact,.address-card,.workflow-card,.process-card,.work-step,.certificate-card{height:auto!important;overflow:visible!important}
+.info-card h1,.info-card h2,.info-card h3,.info-card p,.service-card h1,.service-card h2,.service-card h3,.service-card p,.address-card h1,.address-card h2,.address-card h3,.address-card p,.workflow-card h3,.workflow-card p,.process-card h3,.process-card p,.work-step h3,.work-step p{word-break:normal!important;overflow-wrap:normal!important;white-space:normal!important;line-height:1.45!important}
+
+.footer-ghost,.social-ghost,.icon-ghost,.dot,.marker,.square{display:none!important;width:0!important;height:0!important;opacity:0!important;visibility:hidden!important}
+.footer-contact>span:not(.footer-icon):not(.footer-label),.footer-contact>b:not(.footer-value),.contact-card>span:not(.contact-icon):not(.contact-title),.contact-card>b:not(.contact-value){display:none!important}
+.footer-contact>.footer-icon,.footer-contact>.footer-label,.footer-contact>.footer-value,.contact-card>.contact-icon,.contact-card>.contact-title,.contact-card>.contact-value{display:initial!important}
+.footer-contact::before,.footer-contact::after,.footer-contact *::before,.footer-contact *::after,.contact-card::before,.contact-card::after,.contact-card *::before,.contact-card *::after{content:none!important;display:none!important}
+
+.footer.premium-footer{position:relative!important;min-height:340px!important;padding:42px clamp(28px,5vw,84px) calc(58px + env(safe-area-inset-bottom))!important;display:grid!important;grid-template-columns:240px minmax(640px,980px) 1fr!important;grid-template-areas:"brand contacts ."!important;gap:28px 42px!important;align-items:start!important}
+.footer-brand{grid-area:brand!important}
+.footer-contacts{grid-area:contacts!important;width:100%!important;max-width:980px!important;justify-self:center!important;display:grid!important;grid-template-columns:repeat(2,minmax(300px,1fr))!important;gap:13px 16px!important;margin:0 auto!important}
+.footer-contact{position:relative!important;isolation:isolate!important;min-height:74px!important;display:grid!important;grid-template-columns:50px minmax(0,1fr)!important;grid-template-rows:auto auto!important;column-gap:14px!important;row-gap:2px!important;align-items:center!important;padding:12px 16px!important;border-radius:24px!important;background:rgba(255,250,243,.72)!important;border:1px solid rgba(75,45,32,.10)!important;overflow:hidden!important;text-decoration:none!important}
+.footer-icon{grid-column:1!important;grid-row:1/3!important;width:46px!important;height:46px!important;min-width:46px!important;border-radius:16px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;overflow:hidden!important;color:#fff!important;font-size:0!important;line-height:0!important}
+.footer-icon svg{width:25px!important;height:25px!important;display:block!important}
+.footer-label{grid-column:2!important;grid-row:1!important;display:block!important;font-size:12px!important;line-height:1.05!important;font-weight:850!important;color:rgba(44,23,16,.56)!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+.footer-value{grid-column:2!important;grid-row:2!important;display:block!important;font-size:16px!important;line-height:1.15!important;font-weight:950!important;color:#2c1710!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+.footer-links{position:absolute!important;left:clamp(28px,5vw,84px)!important;bottom:calc(16px + env(safe-area-inset-bottom))!important;display:flex!important;align-items:center!important;flex-wrap:wrap!important;gap:16px!important;margin:0!important;padding:0!important;z-index:5!important}
+.footer-links a{font-size:14px!important;line-height:1.2!important;color:rgba(44,23,16,.62)!important;text-decoration:none!important}
+
+.offline-address-section{padding-top:clamp(56px,7vw,96px)!important}
+.address-grid{display:grid!important;grid-template-columns:repeat(2,minmax(420px,1fr))!important;gap:26px!important;align-items:stretch!important}
+.address-card{position:relative!important;min-height:300px!important;padding:0!important;display:grid!important;grid-template-columns:1fr!important;gap:0!important;overflow:hidden!important;border-radius:38px!important;background:linear-gradient(135deg,rgba(255,250,243,.86),rgba(238,225,204,.58))!important;border:1px solid rgba(75,45,32,.12)!important;box-shadow:0 22px 60px rgba(44,23,16,.08)!important}
+.address-card::before{content:""!important;display:block!important;position:absolute!important;inset:0!important;background:radial-gradient(circle at 82% 20%,rgba(194,165,112,.22),transparent 30%),linear-gradient(90deg,rgba(75,45,32,.08),transparent 36%)!important;pointer-events:none!important}
+.address-pin{position:absolute!important;left:28px!important;top:28px!important;width:70px!important;height:70px!important;border-radius:24px!important;background:linear-gradient(135deg,#4b2d20,#2c1710)!important;color:#fffaf3!important;box-shadow:0 16px 40px rgba(44,23,16,.22)!important;z-index:2!important}
+.address-card>.address-content,.address-card>span:last-child{position:relative!important;z-index:2!important;display:flex!important;flex-direction:column!important;justify-content:flex-end!important;min-height:300px!important;padding:112px 32px 32px!important}
+.address-card small{display:block!important;margin:0 0 10px!important;font-size:13px!important;font-weight:950!important;letter-spacing:.03em!important;color:rgba(44,23,16,.58)!important}
+.address-card h3{margin:0 0 10px!important;font-size:clamp(44px,4.2vw,66px)!important;line-height:.98!important;color:#2c1710!important}
+.address-card p{margin:0 0 24px!important;font-size:17px!important;font-weight:750!important;color:rgba(44,23,16,.68)!important}
+.address-card .small-btn{width:max-content!important;min-height:44px!important;padding:0 18px!important;border-radius:999px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;background:linear-gradient(135deg,#4b2d20,#2c1710)!important;color:#fffaf3!important;text-decoration:none!important}
+
+.workflow-card .step-number,.process-card .step-number,.work-step .step-number,.workflow-number,.process-number,[data-step-number]{font-variant-numeric:normal!important}
+.workflow-card .step-number::before,.process-card .step-number::before,.work-step .step-number::before{content:none!important}
+
+.about-custom-section,.directions-section{margin-top:clamp(28px,4vw,54px)!important;padding-top:clamp(28px,4vw,54px)!important}.split{margin-bottom:clamp(24px,4vw,48px)!important}
+
+.service-grid,.services-grid,.consultations-grid,.service-list,.service-cards,#servicesGrid,#serviceList{width:100%!important;max-width:1200px!important;display:grid!important;grid-template-columns:repeat(2,minmax(360px,1fr))!important;gap:22px!important;align-items:stretch!important}
+.service-card,.consultation-card,.service-item{width:100%!important;min-width:0!important;min-height:360px!important;aspect-ratio:auto!important;padding:clamp(28px,3vw,42px)!important;border-radius:34px!important;display:flex!important;flex-direction:column!important;justify-content:space-between!important}
+.service-card h3,.consultation-card h3,.service-item h3{font-size:clamp(28px,2.4vw,42px)!important;line-height:1.08!important}
+.service-card .btn,.service-card button,.consultation-card .btn,.consultation-card button,.service-item .btn,.service-item button{width:100%!important;min-height:56px!important;border-radius:999px!important;margin-top:22px!important}
+
+#adminWorkflowSteps .list-row{align-items:center!important}
+@media(max-width:980px){.address-grid,.service-grid,.services-grid,.consultations-grid,.service-list,.service-cards,#servicesGrid,#serviceList{grid-template-columns:1fr!important}.address-card,.address-card>.address-content,.address-card>span:last-child{min-height:260px!important}}
+/* PSYSPACE CLEAN V8 END */

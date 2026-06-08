@@ -3060,3 +3060,40 @@ window.addEventListener('pageshow',()=>{normalizeFooterContacts();keepClientSess
   setTimeout(finalRun,400);
 })();
 /* === CLEAN V7 FINAL OVERRIDES END === */
+
+
+
+/* === CLEAN V8 FINAL OVERRIDES === */
+(function(){
+  function safeGet(k,f){try{return JSON.parse(localStorage.getItem(k))??f}catch(e){return f}}
+  function safeSet(k,v){localStorage.setItem(k,JSON.stringify(v))}
+  const $=id=>document.getElementById(id);
+  const defaultWorkflow=[{id:'w1',title:'Знайомство',text:'Психолог уточнює запит, очікування та формат роботи.'},{id:'w2',title:'План',text:'Визначаються цілі, частота зустрічей і комфортний темп.'},{id:'w3',title:'Робота',text:'Регулярні консультації з фокусом на ваш стан і зміни.'},{id:'w4',title:'Підтримка',text:'Поступове закріплення результатів і подальша підтримка.'}];
+  function toast(msg='Збережено'){if(window.adminToast)return window.adminToast(msg);const t=$('adminToast');if(!t)return;t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
+  function workflows(){const arr=safeGet('psy_workflow_steps',null);return Array.isArray(arr)&&arr.length?arr:defaultWorkflow}
+  window.workflows=workflows;
+  function renderWorkflowPublic(){
+    const grid=['#workflowGrid','#processGrid','.workflow-grid','.process-grid'].map(s=>document.querySelector(s)).find(Boolean);
+    if(!grid){document.querySelectorAll('.workflow-card,.process-card,.work-step').forEach((card,i)=>{const n=card.querySelector('.step-number,.workflow-number,.process-number,[data-step-number]');if(n)n.textContent=String(i+1)});return}
+    grid.innerHTML=workflows().map((w,i)=>`<article class="info-card workflow-card reveal visible"><span class="step-number">${i+1}</span><h3>${esc(w.title||'')}</h3><p>${esc(w.text||'')}</p></article>`).join('');
+  }
+  function renderAdminWorkflow(){
+    const box=$('adminWorkflowSteps');if(!box)return;
+    box.innerHTML=workflows().map((w,i)=>`<div class="list-row"><strong>${i+1}. ${esc(w.title||'')}</strong><span>${esc(w.text||'')}</span><div><button class="small-btn" type="button" onclick="editWorkflowStep(${i})">Редагувати</button><button class="small-btn danger" type="button" onclick="deleteWorkflowStep(${i})">Видалити</button></div></div>`).join('');
+  }
+  window.editWorkflowStep=function(i){const w=workflows()[i];if(!w)return;if($('workflowStepEditId'))$('workflowStepEditId').value=i;if($('workflowStepTitle'))$('workflowStepTitle').value=w.title||'';if($('workflowStepText'))$('workflowStepText').value=w.text||'';const form=$('workflowStepForm');if(form)form.scrollIntoView({behavior:'smooth',block:'center'})}
+  window.deleteWorkflowStep=function(i){const arr=workflows().slice();arr.splice(i,1);safeSet('psy_workflow_steps',arr);toast('Крок видалено');renderAll()}
+  function bindWorkflowForm(){const form=$('workflowStepForm');if(!form||form.dataset.v8Bound==='yes')return;form.dataset.v8Bound='yes';form.addEventListener('submit',e=>{e.preventDefault();const arr=workflows().slice();const idx=$('workflowStepEditId')?$('workflowStepEditId').value:'';const item={id:idx!==''&&arr[Number(idx)]?arr[Number(idx)].id:uid(),title:($('workflowStepTitle')?.value||'').trim(),text:($('workflowStepText')?.value||'').trim()};if(idx!=='')arr[Number(idx)]=item;else arr.push(item);safeSet('psy_workflow_steps',arr);form.reset();if($('workflowStepEditId'))$('workflowStepEditId').value='';toast('Крок збережено');renderAll()})}
+  function contactKind(c){const title=String(c.title||c.name||'').toLowerCase(),value=String(c.value||c.url||c.phone||c.email||'').trim(),link=String(c.link||c.href||'').toLowerCase(),digits=value.replace(/\D/g,'');if(link.startsWith('tel:')||title.includes('тел')||title.includes('phone')||((value.startsWith('+')||/^\d/.test(value))&&digits.length>=7))return['phone','Телефон'];if(link.startsWith('mailto:')||title.includes('email')||title.includes('пошта')||/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))return['email','Email'];if(title.includes('instagram')||link.includes('instagram'))return['instagram','Instagram'];if(title.includes('telegram')||title.includes('телеграм')||link.includes('t.me')||link.includes('telegram'))return['telegram','Telegram'];if(title.includes('facebook')||link.includes('facebook')||link.includes('fb.com'))return['facebook','Facebook'];return['site',c.title||'Контакт']}
+  function makeLink(c,type,value){let link=String(c.link||c.href||'').trim();if(link&&link!=='#')return link;if(type==='phone')return'tel:'+String(value).replace(/[^\d+]/g,'');if(type==='email')return'mailto:'+value;if(type==='telegram')return'https://t.me/'+String(value).replace('@','').trim();if(type==='instagram')return'https://instagram.com/'+String(value).replace('@','').trim();return'#'}
+  function icon(type){return(typeof CONTACT_ICONS!=='undefined'&&CONTACT_ICONS[type])?CONTACT_ICONS[type]:''}
+  window.renderContactCard=function(c,mode){const [type,label]=contactKind(c);const value=String(c.value||c.title||label).replace(/[■▪●◆◼︎◾︎⬛︎□▫︎●•◎◉☎]/g,'').trim()||label;const href=makeLink(c,type,value);const target=href&&href!=='#'&&!href.startsWith('tel:')&&!href.startsWith('mailto:')?' target="_blank" rel="noopener"':'';if(mode==='footer')return`<a class="footer-contact" href="${esc(href)}"${target}><span class="footer-icon ${type}">${icon(type)}</span><span class="footer-label">${esc(label)}</span><b class="footer-value">${esc(value)}</b></a>`;return`<a class="contact-card reveal visible" href="${esc(href)}"${target}><span class="contact-icon ${type}">${icon(type)}</span><span class="contact-title">${esc(label)}</span><b class="contact-value">${esc(value)}</b></a>`}
+  window.normalizeFooterContacts=function(){const f=$('footerContacts');if(f)f.innerHTML=contacts().map(c=>renderContactCard(c,'footer')).join('');const tg=$('telegramFloat');if(tg){const t=contacts().find(c=>contactKind(c)[0]==='telegram');tg.href=t?makeLink(t,'telegram',t.value||t.title||''):(site().telegramUrl||'https://t.me/USERNAME')}removeBadSquares()}
+  function removeBadSquares(){document.querySelectorAll('.footer-contact,.contact-card').forEach(a=>{[...a.children].forEach(ch=>{const ok=['footer-icon','footer-label','footer-value','contact-icon','contact-title','contact-value'].some(cls=>ch.classList.contains(cls));if(!ok)ch.remove()});a.querySelectorAll('i,em,small:not(.footer-label):not(.contact-title),.dot,.marker,.square,.footer-ghost,.social-ghost,.icon-ghost,[class*="badge"],[class*="mark"]').forEach(x=>x.remove())})}
+  function normalizeAddressMarkup(){document.querySelectorAll('.address-card').forEach(card=>{const pin=card.querySelector('.address-pin');const body=[...card.children].find(ch=>ch!==pin);if(body&&!body.classList.contains('address-content'))body.classList.add('address-content')})}
+  function normalizeServices(){document.querySelectorAll('.service-card,.consultation-card,.service-item').forEach(card=>{card.style.wordBreak='normal';card.style.overflowWrap='normal';card.style.height='auto'})}
+  function finalRun(){normalizeFooterContacts();const cg=$('contactsGrid');if(cg)cg.innerHTML=contacts().map(c=>renderContactCard(c,'main')).join('');removeBadSquares();normalizeAddressMarkup();renderWorkflowPublic();renderAdminWorkflow();bindWorkflowForm();normalizeServices();keepClientSessionLinks()}
+  const oldRenderAll=window.renderAll;if(typeof oldRenderAll==='function'&&!window.__cleanV8Hook){window.__cleanV8Hook=true;window.renderAll=function(){oldRenderAll();finalRun()}}
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(finalRun,100));window.addEventListener('pageshow',finalRun);setTimeout(finalRun,450)
+})();
+/* === CLEAN V8 FINAL OVERRIDES END === */
