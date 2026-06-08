@@ -3263,3 +3263,325 @@ input[type="file"]::file-selector-button{
   .fixed-cta a{min-width:148px!important;height:52px!important;font-size:16px!important}
 }
 /* CLEAN REBUILD FINAL END */
+
+
+
+/* PSYSPACE CLEAN V2 START */
+
+/* Global page structure: footer remains at bottom on short pages */
+html, body { min-height: 100%; }
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+main { flex: 1 0 auto; }
+.footer { flex-shrink: 0; }
+
+/* Smoother, stable animations */
+.reveal, .section, .info-card, .service-card, .contact-card, .footer-contact, .btn, .small-btn {
+  transition: transform .38s ease, opacity .38s ease, box-shadow .28s ease, background .28s ease;
+}
+.reveal { opacity: 1; transform: none; }
+.btn:hover, .small-btn:hover, .footer-contact:hover, .contact-card:hover { transform: translateY(-2px); }
+
+/* Home layout polish */
+.home-hero-new {
+  align-items: center;
+  gap: clamp(42px, 6vw, 92px);
+}
+.home-hero-new .hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+.psychologist-name-main {
+  order: 0;
+  margin: 0 0 12px;
+  max-width: 100%;
+  font-size: clamp(52px, 6vw, 98px);
+  line-height: .94;
+  letter-spacing: .005em;
+  font-weight: 950;
+  color: var(--brown, #2c1710);
+  word-break: normal;
+  overflow-wrap: normal;
+  text-wrap: balance;
+}
+.home-eyebrow,
+.home-hero-new .eyebrow {
+  order: 1;
+  margin: 0 0 18px;
+}
+.home-hero-new h1 {
+  order: 2;
+  margin-top: 0;
+  max-width: 900px;
+  text-wrap: balance;
+  overflow-wrap: normal;
+}
+.home-hero-new .hero-text { order: 3; max-width: 780px; }
+.home-hero-new .hero-actions {
+  order: 4;
+  margin-top: 28px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+}
+.trust-row {
+  order: 5;
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  align-items: center;
+}
+.trust-row span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+.urgent-mini .btn,
+.home-availability-card .btn {
+  margin-top: 18px;
+}
+
+/* Better home availability spacing */
+.home-availability-panel {
+  width: min(1120px, 100%);
+  margin: clamp(54px, 8vw, 96px) auto 0;
+  align-items: stretch;
+}
+.home-availability-card {
+  overflow: hidden;
+}
+.home-availability-card h2,
+.urgent-mini h2 {
+  text-wrap: balance;
+  line-height: 1.05;
+}
+.urgent-mini p {
+  max-width: 620px;
+  line-height: 1.55;
+}
+
+/* About page layout like previous good version */
+.split {
+  display: grid;
+  grid-template-columns: minmax(340px, 460px) minmax(0, 1fr);
+  grid-template-areas:
+    "photo facts"
+    "photo text";
+  gap: clamp(28px, 5vw, 72px);
+  align-items: start;
+}
+#psychologistPhoto,
+.photo-placeholder.instagram-photo-frame {
+  grid-area: photo;
+  width: 100%;
+  max-width: 460px;
+  min-height: 620px;
+  border-radius: 34px;
+  overflow: hidden;
+  align-self: start;
+}
+#psychologistPhoto img,
+.home-photo-frame img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+.about-facts-grid {
+  grid-area: facts;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(130px, 1fr));
+  gap: 14px;
+  align-items: stretch;
+}
+.about-facts-grid article {
+  min-width: 0;
+  padding: 22px;
+  border-radius: 24px;
+  background: rgba(255,250,243,.62);
+  border: 1px solid rgba(75,45,32,.10);
+}
+.about-facts-grid span {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 850;
+  color: rgba(44,23,16,.55);
+}
+.about-facts-grid strong {
+  display: block;
+  font-size: clamp(18px, 1.6vw, 26px);
+  line-height: 1.15;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+.professional-path-card {
+  grid-area: text;
+  margin-top: clamp(18px, 3vw, 42px);
+  padding: clamp(32px, 4vw, 52px);
+  border-radius: 34px;
+  background: rgba(255,250,243,.58);
+  border: 1px solid rgba(75,45,32,.10);
+}
+.professional-path-card h2 {
+  margin-top: 0;
+  line-height: 1.02;
+  text-wrap: balance;
+}
+#aboutExtraGrid.cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(240px, 1fr));
+  gap: 18px;
+}
+#aboutExtraGrid .info-card {
+  min-height: 170px;
+}
+
+/* Contacts page and addresses */
+.contacts-grid {
+  align-items: stretch;
+  margin-top: 0;
+}
+.contact-card {
+  background: rgba(255,250,243,.70);
+  border: 1px solid rgba(75,45,32,.10);
+  box-shadow: 0 16px 44px rgba(44,23,16,.055);
+}
+.offline-address-section {
+  padding-top: clamp(44px, 6vw, 80px);
+}
+.address-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(260px, 1fr));
+  gap: 22px;
+  margin-top: 28px;
+}
+.address-card {
+  display: grid;
+  grid-template-columns: 62px minmax(0,1fr);
+  gap: 18px;
+  align-items: start;
+  padding: clamp(24px, 3vw, 34px);
+  min-height: 230px;
+  border-radius: 34px;
+  background: rgba(255,250,243,.70);
+  border: 1px solid rgba(75,45,32,.10);
+  box-shadow: 0 18px 48px rgba(44,23,16,.055);
+  text-decoration: none;
+  color: inherit;
+}
+.address-pin {
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg,#4b2d20,#2c1710);
+  color: #fffaf3;
+}
+.address-pin svg { width: 30px; height: 30px; display: block; }
+.address-card small {
+  display: block;
+  margin-bottom: 8px;
+  color: rgba(44,23,16,.58);
+  font-weight: 850;
+}
+.address-card h3 {
+  margin: 0 0 6px;
+  font-size: clamp(34px, 3vw, 52px);
+  line-height: 1.02;
+}
+.address-card p { margin: 0 0 22px; }
+.address-card .small-btn { width: max-content; }
+
+/* Footer improvements */
+.footer.premium-footer {
+  width: 100%;
+  margin-top: auto;
+  min-height: 270px;
+}
+.footer-contacts {
+  align-self: start;
+}
+.footer-contact {
+  background: rgba(255,250,243,.72);
+}
+.footer-links {
+  max-width: min(720px, 70vw);
+}
+
+/* Legal pages */
+.legal-card {
+  max-width: 980px;
+  padding: clamp(28px,4vw,52px);
+  border-radius: 34px;
+  background: rgba(255,250,243,.68);
+  border: 1px solid rgba(75,45,32,.10);
+}
+.legal-card h2 { margin-top: 0; }
+.legal-card h2 + p, .legal-card p, .legal-card li { line-height: 1.65; }
+
+/* Admin notes */
+.admin-note {
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: rgba(255,250,243,.68);
+  border: 1px solid rgba(75,45,32,.10);
+}
+
+/* Fixed CTA should always be viewport-fixed */
+.fixed-cta {
+  position: fixed !important;
+  right: max(22px, env(safe-area-inset-right)) !important;
+  bottom: calc(22px + env(safe-area-inset-bottom)) !important;
+}
+
+/* Mobile */
+@media (max-width: 980px) {
+  .home-hero-new {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .psychologist-name-main {
+    font-size: clamp(42px, 13vw, 72px);
+  }
+  .split {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "photo"
+      "facts"
+      "text";
+  }
+  #psychologistPhoto,
+  .photo-placeholder.instagram-photo-frame {
+    max-width: 100%;
+    min-height: 460px;
+  }
+  .about-facts-grid {
+    grid-template-columns: repeat(2, minmax(0,1fr));
+  }
+  #aboutExtraGrid.cards,
+  .address-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 640px) {
+  .trust-row { gap: 8px; }
+  .trust-row span { min-height: 32px; font-size: 14px; }
+  .about-facts-grid { grid-template-columns: 1fr; }
+  .address-card {
+    grid-template-columns: 1fr;
+  }
+}
+/* PSYSPACE CLEAN V2 END */

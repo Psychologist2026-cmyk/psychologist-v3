@@ -60,6 +60,10 @@ const D_SLOTS = [
   {id:'sl2', date:'2026-06-05', time:'12:00', format:'online', city:''},
   {id:'sl3', date:'2026-06-06', time:'14:00', format:'offline', city:'Київ'}
 ];
+const D_ADDRESSES = [
+  {id:'addr1', city:'Кривий Ріг', street:'вулиця Героїв АТО, 32', map:'https://www.google.com/maps/search/?api=1&query=%D0%9A%D1%80%D0%B8%D0%B2%D0%B8%D0%B9%20%D0%A0%D1%96%D0%B3%20%D0%B2%D1%83%D0%BB%D0%B8%D1%86%D1%8F%20%D0%93%D0%B5%D1%80%D0%BE%D1%97%D0%B2%20%D0%90%D0%A2%D0%9E%2032'},
+  {id:'addr2', city:'Київ', street:'вулиця Прорізна, 4', map:'https://www.google.com/maps/search/?api=1&query=%D0%9A%D0%B8%D1%97%D0%B2%20%D0%B2%D1%83%D0%BB%D0%B8%D1%86%D1%8F%20%D0%9F%D1%80%D0%BE%D1%80%D1%96%D0%B7%D0%BD%D0%B0%204'}
+];
 const D_CLIENTS = [{email:'client@example.com', name:'Тестовий Клієнт', password:'123456', phone:'+380991112233', social:'@client_demo', photo:''}];
 
 function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
@@ -73,7 +77,7 @@ function init(){
     ['psy_site',D_SITE],['psy_services',D_SERVICES],['psy_directions',D_DIRECTIONS],
     ['psy_contacts',D_CONTACTS],['psy_certs',D_CERTS],['psy_reviews',D_REVIEWS],
     ['psy_faq',D_FAQ],['psy_slots',D_SLOTS],['psy_bookings',[]],
-    ['psy_days_off',[]],['psy_clients',D_CLIENTS],['psy_about_extra',[]]
+    ['psy_days_off',[]],['psy_clients',D_CLIENTS],['psy_about_extra',[]],['psy_addresses',D_ADDRESSES]
   ];
   defaults.forEach(([key,value]) => {
     if(!localStorage.getItem(key)) set(key,value);
@@ -231,7 +235,7 @@ function renderPublic(){
   if(faqList) faqList.innerHTML=faqs().map((f,i)=>`<details ${i===0?'open':''}><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>`).join('');
 
   const contactsGrid=document.getElementById('contactsGrid');
-  if(contactsGrid) contactsGrid.innerHTML=contacts().map(c=>`<a class="contact-card reveal visible" href="${esc(c.link||'#')}" target="_blank"><h3>${esc(c.title)}</h3><p>${esc(c.value)}</p></a>`).join('');
+  if(contactsGrid) contactsGrid.innerHTML=contacts().map(c=>renderContactCard(c,'main')).join('');
 
   renderNextSlots();
 }
@@ -2131,3 +2135,107 @@ document.addEventListener('DOMContentLoaded', () => {
 })();
 
 window.addEventListener('pageshow',()=>{normalizeFooterContacts();keepClientSessionLinks();autofillClientReviewName()});
+
+
+
+/* === CLEAN V2 FINAL OVERRIDES: footer icons, contacts, addresses, session === */
+(function(){
+  const PIN_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"/></svg>';
+
+  function addresses(){
+    return get('psy_addresses', [
+      {id:'addr1', city:'Кривий Ріг', street:'вулиця Героїв АТО, 32', map:'https://www.google.com/maps/search/?api=1&query=Кривий%20Ріг%20вулиця%20Героїв%20АТО%2032'},
+      {id:'addr2', city:'Київ', street:'вулиця Прорізна, 4', map:'https://www.google.com/maps/search/?api=1&query=Київ%20вулиця%20Прорізна%204'}
+    ]);
+  }
+  window.addresses = addresses;
+
+  window.renderFooterContacts = function(){
+    normalizeFooterContacts();
+  };
+
+  function renderContactsPageFinal(){
+    const contactsGrid=document.getElementById('contactsGrid');
+    if(contactsGrid) contactsGrid.innerHTML=contacts().map(c=>renderContactCard(c,'main')).join('');
+
+    const addressGrid=document.getElementById('offlineAddressesGrid');
+    if(addressGrid){
+      addressGrid.innerHTML=addresses().map(a=>{
+        const q = a.map || ('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent((a.city||'')+' '+(a.street||'')));
+        return `<a class="address-card reveal visible" href="${esc(q)}" target="_blank" rel="noopener">
+          <span class="address-pin">${PIN_ICON}</span>
+          <span>
+            <small>м. ${esc(a.city||'')}</small>
+            <h3>${esc(a.city||'')}</h3>
+            <p>${esc(a.street||'')}</p>
+            <span class="small-btn">Відкрити карту</span>
+          </span>
+        </a>`;
+      }).join('');
+    }
+  }
+
+  function renderAdminAddresses(){
+    const box=document.getElementById('adminAddresses');
+    if(!box) return;
+    box.innerHTML=addresses().map((a,i)=>`<div class="list-row"><strong>${esc(a.city)}</strong><span>${esc(a.street)}</span><div><button class="small-btn" onclick="editAddress(${i})">Редагувати</button><button class="small-btn danger" onclick="deleteAddress(${i})">Видалити</button></div></div>`).join('') || '<div class="list-row">Адрес ще немає.</div>';
+  }
+
+  window.editAddress=function(i){
+    const a=addresses()[i]; if(!a) return;
+    addressEditId.value=i;
+    addressCity.value=a.city||'';
+    addressStreet.value=a.street||'';
+    addressMap.value=a.map||'';
+  };
+  window.deleteAddress=function(i){
+    const arr=addresses(); arr.splice(i,1); set('psy_addresses',arr); renderAll();
+  };
+
+  const addressForm=document.getElementById('addressItemForm');
+  if(addressForm && addressForm.dataset.bound!=='yes'){
+    addressForm.dataset.bound='yes';
+    addressForm.addEventListener('submit',e=>{
+      e.preventDefault();
+      const arr=addresses();
+      const item={id:uid(), city:addressCity.value.trim(), street:addressStreet.value.trim(), map:addressMap.value.trim()};
+      const idx=addressEditId.value;
+      if(idx!=='') arr[Number(idx)]={...arr[Number(idx)],...item};
+      else arr.push(item);
+      set('psy_addresses',arr);
+      addressForm.reset();
+      addressEditId.value='';
+      renderAll();
+    });
+  }
+
+  function keepSession(){
+    keepClientSessionLinks();
+    if(localStorage.psy_client_email){
+      document.querySelectorAll('.footer-links a[href="auth.html"]').forEach(a=>{a.textContent='Кабінет';a.href='client-dashboard.html';});
+    }
+  }
+
+  function finalRun(){
+    normalizeFooterContacts();
+    renderContactsPageFinal();
+    renderAdminAddresses();
+    keepSession();
+    autofillClientReviewName();
+    const tg=document.getElementById('telegramFloat');
+    if(tg) tg.href=site().telegramUrl || 'https://t.me/USERNAME';
+  }
+
+  const prevRenderAll = window.renderAll;
+  if(typeof prevRenderAll === 'function' && !window.__cleanV2RenderHook){
+    window.__cleanV2RenderHook=true;
+    window.renderAll=function(){
+      prevRenderAll();
+      finalRun();
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(finalRun,50));
+  window.addEventListener('pageshow',finalRun);
+  setTimeout(finalRun,250);
+})();
