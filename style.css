@@ -3585,3 +3585,284 @@ main { flex: 1 0 auto; }
   }
 }
 /* PSYSPACE CLEAN V2 END */
+
+
+
+/* PSYSPACE CLEAN V3 START */
+
+/* Wider pages: less empty side space, no central squeezing */
+:root {
+  --page-max-wide: 1560px;
+  --page-pad-wide: clamp(28px, 5vw, 84px);
+}
+.section,
+.hero,
+.home-hero-new,
+.page-hero,
+.header {
+  max-width: min(var(--page-max-wide), calc(100vw - var(--page-pad-wide))) !important;
+}
+.section,
+.hero,
+.home-hero-new,
+.page-hero {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Photo frames: remove white/outer frame completely, only rounded image */
+.home-photo-frame,
+.photo-placeholder,
+.instagram-photo-frame,
+#psychologistPhoto,
+.about-photo,
+.photo-frame,
+.hero-photo,
+.profile-photo-frame {
+  background: transparent !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border-radius: 34px !important;
+}
+.home-photo-frame::before,
+.home-photo-frame::after,
+.photo-placeholder::before,
+.photo-placeholder::after,
+.instagram-photo-frame::before,
+.instagram-photo-frame::after,
+#psychologistPhoto::before,
+#psychologistPhoto::after,
+.about-photo::before,
+.about-photo::after,
+.photo-frame::before,
+.photo-frame::after {
+  content: none !important;
+  display: none !important;
+}
+.home-photo-frame img,
+.photo-placeholder img,
+.instagram-photo-frame img,
+#psychologistPhoto img,
+.about-photo img,
+.photo-frame img,
+.hero-photo img,
+.profile-photo-frame img {
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  border-radius: inherit !important;
+}
+
+/* Remove ugly capsule/border around psychologist name */
+.psychologist-name-main,
+#homePsychologistName,
+[data-site="psychologistName"] {
+  background: transparent !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+}
+
+/* Home name above “особисті консультації” */
+.home-hero-new .psychologist-name-main {
+  order: 0 !important;
+  margin-bottom: 10px !important;
+}
+.home-hero-new .eyebrow,
+.home-hero-new .home-eyebrow {
+  order: 1 !important;
+}
+.home-hero-new h1 {
+  order: 2 !important;
+}
+.home-hero-new .hero-text {
+  order: 3 !important;
+}
+.home-hero-new .hero-actions {
+  order: 4 !important;
+}
+.home-hero-new .trust-row {
+  order: 5 !important;
+}
+
+/* Hero icons/tags: no overlap */
+.trust-row {
+  margin-top: 22px !important;
+  gap: 10px 18px !important;
+  align-items: center !important;
+  max-width: 100% !important;
+}
+.trust-row span {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 34px !important;
+  padding: 7px 12px !important;
+  line-height: 1.05 !important;
+  white-space: nowrap !important;
+  background: rgba(255,250,243,.46) !important;
+  border-radius: 999px !important;
+}
+
+/* Home availability blocks: wider, aligned, not squeezed in center */
+.home-availability-panel {
+  width: 100% !important;
+  max-width: min(var(--page-max-wide), calc(100vw - var(--page-pad-wide))) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr) !important;
+  gap: clamp(18px, 3vw, 34px) !important;
+  align-items: stretch !important;
+}
+.home-availability-card,
+.urgent-mini {
+  width: 100% !important;
+  min-width: 0 !important;
+  padding: clamp(30px, 4vw, 54px) !important;
+}
+.urgent-mini {
+  text-align: left !important;
+  justify-content: center !important;
+}
+.urgent-mini .btn,
+.home-availability-card .btn {
+  margin-top: 22px !important;
+}
+
+/* Footer: center socials and leave legal links separate */
+.footer.premium-footer {
+  grid-template-columns: 230px minmax(520px, 920px) minmax(120px, 1fr) !important;
+  grid-template-areas:
+    "brand contacts ."
+    "links links links" !important;
+  column-gap: clamp(24px, 4vw, 64px) !important;
+}
+.footer-contacts {
+  justify-self: center !important;
+  align-self: start !important;
+  max-width: 920px !important;
+}
+.footer-contact {
+  position: relative !important;
+}
+.footer-contact > *:not(.footer-icon):not(.footer-label):not(.footer-value) {
+  display: none !important;
+}
+.footer-contact::before,
+.footer-contact::after,
+.footer-contact *::before,
+.footer-contact *::after {
+  content: none !important;
+  display: none !important;
+}
+.footer-links {
+  left: clamp(22px, 4vw, 76px) !important;
+  bottom: calc(30px + env(safe-area-inset-bottom)) !important;
+  max-width: min(860px, calc(100vw - 260px)) !important;
+}
+
+/* About page: remove frame and keep photo proportional */
+.split {
+  max-width: min(var(--page-max-wide), calc(100vw - var(--page-pad-wide))) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  grid-template-columns: minmax(420px, 560px) minmax(0, 1fr) !important;
+  gap: clamp(34px, 5.5vw, 86px) !important;
+}
+#psychologistPhoto,
+.photo-placeholder.instagram-photo-frame {
+  max-width: 560px !important;
+  min-height: 640px !important;
+  height: clamp(560px, 58vw, 760px) !important;
+}
+.about-facts-grid article {
+  overflow: visible !important;
+}
+.about-custom-section {
+  max-width: min(var(--page-max-wide), calc(100vw - var(--page-pad-wide))) !important;
+}
+.about-custom-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(260px, 1fr)) !important;
+  gap: 18px !important;
+}
+.about-custom-grid .info-card {
+  min-height: 180px !important;
+}
+
+/* Contact page: keep cards clean */
+.contact-card > *:not(.contact-icon):not(.contact-title):not(.contact-value) {
+  display: none !important;
+}
+
+/* Fixed buttons stay in viewport */
+.fixed-cta {
+  position: fixed !important;
+  right: max(22px, env(safe-area-inset-right)) !important;
+  bottom: calc(22px + env(safe-area-inset-bottom)) !important;
+  z-index: 2147483647 !important;
+}
+
+/* Admin fields */
+.admin-field {
+  display: grid;
+  gap: 8px;
+  font-weight: 850;
+  color: rgba(44,23,16,.78);
+}
+.admin-field small {
+  font-weight: 650;
+  color: rgba(44,23,16,.55);
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .home-availability-panel {
+    grid-template-columns: 1fr !important;
+  }
+  .split {
+    grid-template-columns: 1fr !important;
+  }
+  #psychologistPhoto,
+  .photo-placeholder.instagram-photo-frame {
+    max-width: 100% !important;
+    min-height: 460px !important;
+    height: 560px !important;
+  }
+  .footer.premium-footer {
+    grid-template-columns: 1fr !important;
+    grid-template-areas: "brand" "contacts" "links" !important;
+  }
+  .footer-contacts {
+    justify-self: stretch !important;
+  }
+  .footer-links {
+    position: static !important;
+    max-width: 100% !important;
+    margin-top: 22px !important;
+  }
+}
+@media (max-width: 760px) {
+  :root {
+    --page-pad-wide: 30px;
+  }
+  .footer-contacts,
+  .about-custom-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .psychologist-name-main {
+    font-size: clamp(42px, 13vw, 72px) !important;
+  }
+}
+/* PSYSPACE CLEAN V3 END */

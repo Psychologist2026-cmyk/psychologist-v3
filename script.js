@@ -2239,3 +2239,145 @@ window.addEventListener('pageshow',()=>{normalizeFooterContacts();keepClientSess
   window.addEventListener('pageshow',finalRun);
   setTimeout(finalRun,250);
 })();
+
+
+
+/* === CLEAN V3 FINAL OVERRIDES === */
+(function(){
+  function safeGet(k,f){ try { return JSON.parse(localStorage.getItem(k)) ?? f; } catch(e){ return f; } }
+  function safeSet(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
+  function q(id){ return document.getElementById(id); }
+
+  const defaultAboutBlocks = [
+    {id:'ab1', title:'Основна експертиза', text:'Стосунки з партнером, стрес, тривога та страх, адаптація до нових умов життя, депресивні стани.'},
+    {id:'ab2', title:'Методи роботи', text:'Арт-терапія, психодинамічний і системний підхід, екзистенційний аналіз та логотерапія.'},
+    {id:'ab3', title:'Освіта', text:'Криворізький Державний Педагогічний університет. Спеціальність: практична психологія.'},
+    {id:'ab4', title:'Особливості терапії', text:'Багато уваги до переживань клієнта, підтримувальний темп, пошук опори, гумор і творчі методи там, де це доречно.'}
+  ];
+
+  function aboutBlocks(){
+    const existing = safeGet('psy_about_extra', null);
+    if(Array.isArray(existing) && existing.length) return existing;
+    return defaultAboutBlocks;
+  }
+
+  function renderAboutCustomBlocks(){
+    const grid = q('customAboutBlocks') || q('aboutExtraGrid');
+    if(grid){
+      grid.innerHTML = aboutBlocks().map(b => `<article class="info-card reveal visible"><h3>${esc(b.title||'')}</h3><p>${esc(b.text||'')}</p></article>`).join('');
+    }
+  }
+
+  function renderAdminAboutExtra(){
+    const box = q('adminAboutExtra');
+    if(!box) return;
+    const arr = aboutBlocks();
+    box.innerHTML = arr.map((b,i)=>`<div class="list-row"><strong>${esc(b.title||'')}</strong><span>${esc(b.text||'')}</span><div><button class="small-btn" type="button" onclick="editAboutExtra(${i})">Редагувати</button><button class="small-btn danger" type="button" onclick="deleteAboutExtra(${i})">Видалити</button></div></div>`).join('');
+  }
+
+  window.editAboutExtra = function(i){
+    const b = aboutBlocks()[i]; if(!b) return;
+    if(q('aboutExtraEditId')) q('aboutExtraEditId').value = i;
+    if(q('aboutExtraTitle')) q('aboutExtraTitle').value = b.title || '';
+    if(q('aboutExtraText')) q('aboutExtraText').value = b.text || '';
+  };
+
+  window.deleteAboutExtra = function(i){
+    const arr = aboutBlocks().slice();
+    arr.splice(i,1);
+    safeSet('psy_about_extra', arr);
+    renderAll();
+  };
+
+  function bindAboutExtraForm(){
+    const form = q('aboutExtraForm');
+    if(!form || form.dataset.bound === 'yes') return;
+    form.dataset.bound = 'yes';
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const arr = aboutBlocks().slice();
+      const idx = q('aboutExtraEditId') ? q('aboutExtraEditId').value : '';
+      const item = { id: uid(), title: (q('aboutExtraTitle')?.value || '').trim(), text: (q('aboutExtraText')?.value || '').trim() };
+      if(idx !== '') arr[Number(idx)] = { ...arr[Number(idx)], ...item };
+      else arr.push(item);
+      safeSet('psy_about_extra', arr);
+      form.reset();
+      if(q('aboutExtraEditId')) q('aboutExtraEditId').value = '';
+      renderAll();
+    });
+  }
+
+  function setImage(targetKey, file){
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const s = site();
+      s[targetKey] = reader.result;
+      safeSet('psy_site', s);
+      renderAll();
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function bindSeparatePhotoInputs(){
+    const home = q('homePhotoInput');
+    const about = q('aboutPhotoInput');
+    if(home && home.dataset.bound !== 'yes'){
+      home.dataset.bound = 'yes';
+      home.addEventListener('change', e => setImage('homePhoto', e.target.files[0]));
+    }
+    if(about && about.dataset.bound !== 'yes'){
+      about.dataset.bound = 'yes';
+      about.addEventListener('change', e => setImage('aboutPhoto', e.target.files[0]));
+    }
+  }
+
+  function applySeparatePhotos(){
+    const s = site();
+    const homeSrc = s.homePhoto || s.psychologistPhoto || '';
+    const aboutSrc = s.aboutPhoto || s.psychologistPhoto || '';
+
+    const homeFrame = q('homePsychologistPhoto');
+    if(homeFrame && homeSrc){
+      homeFrame.innerHTML = `<img src="${homeSrc}" alt="Фото психолога">`;
+    }
+
+    const aboutFrame = q('psychologistPhoto');
+    if(aboutFrame && aboutSrc){
+      aboutFrame.innerHTML = `<img src="${aboutSrc}" alt="Фото психолога">`;
+    }
+  }
+
+  function removeFooterDuplicates(){
+    document.querySelectorAll('.footer-contact').forEach(a=>{
+      [...a.children].forEach(ch=>{
+        if(!ch.classList.contains('footer-icon') && !ch.classList.contains('footer-label') && !ch.classList.contains('footer-value')) ch.remove();
+      });
+    });
+  }
+
+  function finalV3Run(){
+    applySeparatePhotos();
+    renderAboutCustomBlocks();
+    renderAdminAboutExtra();
+    bindAboutExtraForm();
+    bindSeparatePhotoInputs();
+    removeFooterDuplicates();
+    normalizeFooterContacts();
+    keepClientSessionLinks();
+  }
+
+  const oldRenderAll = window.renderAll;
+  if(typeof oldRenderAll === 'function' && !window.__cleanV3RenderHook){
+    window.__cleanV3RenderHook = true;
+    window.renderAll = function(){
+      oldRenderAll();
+      finalV3Run();
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded', () => setTimeout(finalV3Run, 80));
+  window.addEventListener('pageshow', finalV3Run);
+  setTimeout(finalV3Run, 350);
+})();
+/* === CLEAN V3 FINAL OVERRIDES END === */
