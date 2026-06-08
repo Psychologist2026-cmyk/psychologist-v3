@@ -24,15 +24,19 @@
 </header>
 
 <main>
-
-<section class="section page-hero"><p class="eyebrow">Сертифікати</p><h1>Освіта та кваліфікація</h1></section>
-<section class="section compact-top">
-  <div class="certificate-toolbar" id="certificateToolbar"></div>
-  <div class="cert-grid cert-grid-large" id="certificatesGrid">
-    <article class="cert-card"><h3>Сертифікат 1</h3><span>Освіта</span></article>
-  </div>
+<section class="section page-hero certificates-hero">
+  <p class="eyebrow">Сертифікати</p>
+  <h1>Освіта та кваліфікація</h1>
 </section>
 
+<section class="section certificates-tabs-section">
+  <div class="cert-tabs" id="certificateTabs">
+    <button class="small-btn active" type="button" data-cert-filter="all">Усі</button>
+    <button class="small-btn" type="button" data-cert-filter="education">Освіта</button>
+    <button class="small-btn" type="button" data-cert-filter="courses">Професійні курси</button>
+  </div>
+  <div class="cards certificates-grid old-certificates-grid" id="certificatesGrid"></div>
+</section>
 </main>
 <footer class="footer premium-footer">
   <div class="footer-brand">

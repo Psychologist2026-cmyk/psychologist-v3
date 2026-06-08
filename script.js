@@ -2639,3 +2639,191 @@ window.addEventListener('pageshow',()=>{normalizeFooterContacts();keepClientSess
   setTimeout(()=>{renderCertificatesFinal();renderAdminCertificatesFinal();},350);
 })();
 /* === CLEAN V5 CERTIFICATES DATA END === */
+
+
+
+/* === CLEAN V6 FINAL OVERRIDES === */
+(function(){
+  const PLESO_PROFILE_URL = 'https://pleso.me/ua/therapists?psychologist_id=fb130b5c-c921-448a-bfa4-919d16e65ffe';
+
+  const importedInfo = {
+    directions: [
+      {id:'dir1', title:'Основна експертиза', text:'Стосунки з партнером, стрес, тривога та страх, адаптація до нових умов життя, депресія.'},
+      {id:'dir2', title:'Також працює з', text:'Емоційна заплутаність, самотність, емоційне вигорання, внутрішні й зовнішні конфлікти, адаптація до життєвих змін.'},
+      {id:'dir3', title:'Методи роботи', text:'Арт-терапія, психодинамічна терапія, системна терапія, екзистенційний аналіз і логотерапія.'},
+      {id:'dir4', title:'Формат', text:'Індивідуальні консультації та психотерапія для дорослих клієнтів від 18 років.'},
+      {id:'dir5', title:'Додатковий досвід', text:'Підтримка клієнтів із депресивною та тривожною симптоматикою, психіатричними та соматичними діагнозами, залежністю, суїцидальними нахилами, вагітних і молодих мам, літніх людей.'},
+      {id:'dir6', title:'Особливість терапії', text:'Багато слухає, використовує гумор і творчі методи, допомагає знайти опору та фокусується на глибинних переживаннях.'}
+    ],
+    aboutBlocks: [
+      {id:'ab1', title:'Досвід і компетенції', text:'Анастасія допомагає вийти з емоційної заплутаності, прийняти самотність, налагодити стосунки з партнером, пропрацювати тривогу, страх та емоційне вигорання.'},
+      {id:'ab2', title:'Кому підходить терапія', text:'Працює з дорослими клієнтами від 18 років, які готові досліджувати свої стани, симптоми і разом зі спеціалісткою шукати відповіді та рішення.'},
+      {id:'ab3', title:'Підхід', text:'Допомагає розвивати резилієнтність, краще розуміти себе та знаходити внутрішні ресурси для подолання складних періодів життя.'}
+    ],
+    certificates: [
+      {id:'cert-education-2013', category:'education', title:'Диплом Криворізького Державного Педагогічного університету', subtitle:'Вища та професійна освіта', year:'2013', text:'Спеціальність: “Практична психологія”. Спеціалізація: “Практичний психолог”.', image:'', sourceUrl:PLESO_PROFILE_URL, sourceLabel:'Переглянути диплом'},
+      {id:'cert-course-1', category:'courses', title:'Сертифікат 1', subtitle:'Професійні курси', year:'', text:'Місце для фото та опису професійного курсу. Можна редагувати в кабінеті психолога.', image:''},
+      {id:'cert-course-2', category:'courses', title:'Сертифікат 2', subtitle:'Професійні курси', year:'', text:'Місце для фото та опису професійного курсу. Можна редагувати в кабінеті психолога.', image:''}
+    ]
+  };
+
+  function safeGet(k,f){ try { return JSON.parse(localStorage.getItem(k)) ?? f; } catch(e){ return f; } }
+  function safeSet(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
+
+  function finalDirections(){
+    const arr = safeGet('psy_directions', null);
+    if(Array.isArray(arr) && arr.length) return arr;
+    return importedInfo.directions;
+  }
+
+  function finalAboutBlocks(){
+    const arr = safeGet('psy_about_extra', null);
+    if(Array.isArray(arr) && arr.length) return arr;
+    return importedInfo.aboutBlocks;
+  }
+
+  function finalCertificates(){
+    const arr = safeGet('psy_certificates', null);
+    if(Array.isArray(arr) && arr.length) return arr;
+    return importedInfo.certificates;
+  }
+
+  window.directions = finalDirections;
+  window.certificates = finalCertificates;
+
+  function contactKind(c){
+    const title = String(c.title || c.name || '').toLowerCase();
+    const value = String(c.value || c.url || c.phone || c.email || '').trim();
+    const link = String(c.link || c.href || '').toLowerCase();
+
+    if(link.startsWith('tel:') || /^\+?[\d\s().-]{7,}$/.test(value)) return ['phone','Телефон'];
+    if(link.startsWith('mailto:') || title.includes('email') || title.includes('пошта')) return ['email','Email'];
+    if(title.includes('instagram') || link.includes('instagram')) return ['instagram','Instagram'];
+    if(title.includes('telegram') || link.includes('t.me') || link.includes('telegram')) return ['telegram','Telegram'];
+    if(title.includes('facebook') || link.includes('facebook') || link.includes('fb.com')) return ['facebook','Facebook'];
+    if(value.includes('@') && !title.includes('instagram') && !title.includes('telegram')) return ['email','Email'];
+    return ['site', c.title || 'Контакт'];
+  }
+
+  function buildLink(c,type,value){
+    let link = String(c.link || c.href || '').trim();
+    if(link && link !== '#') return link;
+    if(type === 'phone') return 'tel:' + String(value).replace(/[^\d+]/g,'');
+    if(type === 'email') return 'mailto:' + value;
+    if(type === 'telegram') return 'https://t.me/' + String(value).replace('@','').trim();
+    if(type === 'instagram') return 'https://instagram.com/' + String(value).replace('@','').trim();
+    return '#';
+  }
+
+  window.renderContactCard = function(c,mode){
+    const [type,label] = contactKind(c);
+    const raw = String(c.value || c.title || label).replace(/[■▪●◆◼︎◾︎⬛︎□▫︎●•◎◉☎]/g,'').trim() || label;
+    const href = buildLink(c,type,raw);
+    const target = href && href !== '#' && !href.startsWith('tel:') && !href.startsWith('mailto:') ? ' target="_blank" rel="noopener"' : '';
+    const iconHtml = (typeof CONTACT_ICONS !== 'undefined' && CONTACT_ICONS[type]) ? CONTACT_ICONS[type] : '';
+    if(mode === 'footer'){
+      return `<a class="footer-contact" href="${esc(href)}"${target}><span class="footer-icon ${type}">${iconHtml}</span><span class="footer-label">${esc(label)}</span><b class="footer-value">${esc(raw)}</b></a>`;
+    }
+    return `<a class="contact-card reveal visible" href="${esc(href)}"${target}><span class="contact-icon ${type}">${iconHtml}</span><span class="contact-title">${esc(label)}</span><b class="contact-value">${esc(raw)}</b></a>`;
+  };
+
+  window.normalizeFooterContacts = function(){
+    const f = document.getElementById('footerContacts');
+    if(f) f.innerHTML = contacts().map(c=>renderContactCard(c,'footer')).join('');
+    const tg = document.getElementById('telegramFloat');
+    if(tg){
+      const t = contacts().find(c => contactKind(c)[0] === 'telegram');
+      tg.href = t ? buildLink(t,'telegram',t.value || t.title || '') : (site().telegramUrl || 'https://t.me/USERNAME');
+    }
+  };
+
+  function renderContactsGrid(){
+    const grid = document.getElementById('contactsGrid');
+    if(grid) grid.innerHTML = contacts().map(c=>renderContactCard(c,'main')).join('');
+  }
+
+  function renderDirectionsFinal(){
+    const grid = document.getElementById('therapyDirectionsGrid');
+    if(grid) grid.innerHTML = finalDirections().map(d=>`<article class="info-card reveal visible"><h3>${esc(d.title||'')}</h3><p>${esc(d.text||'')}</p></article>`).join('');
+    const aboutGrid = document.getElementById('customAboutBlocks') || document.getElementById('aboutExtraGrid');
+    if(aboutGrid) aboutGrid.innerHTML = finalAboutBlocks().map(b=>`<article class="info-card reveal visible"><h3>${esc(b.title||'')}</h3><p>${esc(b.text||'')}</p></article>`).join('');
+  }
+
+  function renderCertificatesFinal(filter='all'){
+    const grid = document.getElementById('certificatesGrid');
+    if(!grid) return;
+    let arr = finalCertificates();
+    if(filter !== 'all') arr = arr.filter(c => (c.category || 'education') === filter);
+    grid.innerHTML = arr.map((c,i)=>{
+      const img = c.image ? `<img src="${c.image}" alt="${esc(c.title||'Сертифікат')}">` : `<span>${esc(c.title || ('Сертифікат '+(i+1)))}</span>`;
+      return `<article class="certificate-card reveal visible" data-cert-index="${i}">
+        <div class="certificate-image">${img}</div>
+        <h3>${esc(c.title||'')}</h3>
+        <div class="certificate-meta">${c.year ? `<span>${esc(c.year)}</span>` : ''}${c.subtitle ? `<span>${esc(c.subtitle)}</span>` : ''}</div>
+        <p>${esc(c.text||'')}</p>
+      </article>`;
+    }).join('');
+    grid.querySelectorAll('.certificate-card').forEach(card=>{
+      card.addEventListener('click',()=>{
+        const c = arr[Number(card.dataset.certIndex)];
+        if(!c) return;
+        const img = c.image ? `<img src="${c.image}" alt="${esc(c.title||'Сертифікат')}">` : '';
+        const source = c.sourceUrl ? `<p><a class="btn primary" href="${esc(c.sourceUrl)}" target="_blank" rel="noopener">${esc(c.sourceLabel || 'Переглянути документ')}</a></p>` : '';
+        showModal(`<div class="certificate-full-modal">${img}<h2>${esc(c.title||'')}</h2><p>${esc(c.subtitle||'')} ${esc(c.year||'')}</p><p>${esc(c.text||'')}</p>${source}</div>`);
+      });
+    });
+  }
+
+  function bindCertificateTabs(){
+    const tabs = document.getElementById('certificateTabs');
+    if(!tabs || tabs.dataset.bound === 'yes') return;
+    tabs.dataset.bound = 'yes';
+    tabs.querySelectorAll('[data-cert-filter]').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        tabs.querySelectorAll('[data-cert-filter]').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        renderCertificatesFinal(btn.dataset.certFilter || 'all');
+      });
+    });
+  }
+
+  function renderAdminCertificatesFinal(){
+    const box = document.getElementById('adminCertificates');
+    if(!box) return;
+    box.innerHTML = finalCertificates().map((c,i)=>`<div class="list-row"><strong>${esc(c.title||'')}</strong><span>${esc(c.year||'')} ${esc(c.subtitle||'')}</span><div><button class="small-btn" type="button" onclick="editCertificate(${i})">Редагувати</button><button class="small-btn danger" type="button" onclick="deleteCertificate(${i})">Видалити</button></div></div>`).join('');
+  }
+
+  function removeFooterSquares(){
+    document.querySelectorAll('.footer-contact,.contact-card').forEach(a=>{
+      [...a.children].forEach(ch=>{
+        const ok = ['footer-icon','footer-label','footer-value','contact-icon','contact-title','contact-value'].some(cls=>ch.classList.contains(cls));
+        if(!ok) ch.remove();
+      });
+    });
+  }
+
+  function finalRun(){
+    normalizeFooterContacts();
+    renderContactsGrid();
+    renderDirectionsFinal();
+    renderCertificatesFinal(document.querySelector('#certificateTabs .active')?.dataset.certFilter || 'all');
+    bindCertificateTabs();
+    renderAdminCertificatesFinal();
+    removeFooterSquares();
+    keepClientSessionLinks();
+  }
+
+  const oldRenderAll = window.renderAll;
+  if(typeof oldRenderAll === 'function' && !window.__cleanV6Hook){
+    window.__cleanV6Hook = true;
+    window.renderAll = function(){
+      oldRenderAll();
+      finalRun();
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(finalRun,80));
+  window.addEventListener('pageshow',finalRun);
+  setTimeout(finalRun,350);
+})();
+/* === CLEAN V6 FINAL OVERRIDES END === */
